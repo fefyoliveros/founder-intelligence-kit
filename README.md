@@ -1,150 +1,195 @@
 # Founder Intelligence Kit
 
-Two Claude Code skills that compound over time. The more you use them, the sharper your thinking gets.
+> Two Claude Code skills that compound over time. The more you use them, the sharper your thinking gets.
 
-**[/mentor](#mentor-skill)** — A world-class business advisor in your terminal. Socratic, research-grounded, anti-sycophantic. Challenges your assumptions before helping you decide.
+---
 
-**[/memory-update](#memory-update-skill)** — Captures what you learned each session so the next one starts with full context, not a blank slate.
+## The skills
 
-Used together, they create a loop: sharper thinking in the present, accumulated wisdom over time.
+| Skill | What it does | Install path |
+|---|---|---|
+| [/mentor](skills/mentor/SKILL.md) | Socratic business advisor. Asks questions, challenges assumptions, gives structured analysis only when you ask for it. | `~/.claude/skills/mentor/` |
+| [/memory-update](skills/memory-update/SKILL.md) | End-of-session memory sync. Captures decisions, learnings, and next steps so every session starts with full context. | `~/.claude/skills/memory-update/` |
+
+**Read the skill files** to understand exactly what each one does and how to configure it.
 
 ---
 
 ## Why these two skills
 
-Most AI sessions evaporate. You think clearly in the moment, reach a decision, close the tab — and the next session starts cold. You re-explain the context, re-derive the reasoning, and often reach slightly different conclusions because the framing shifted.
+Most AI sessions evaporate. You think clearly in the moment, close the tab, and the next session starts cold. You re-explain the context, re-derive the reasoning, and often land somewhere different because the framing shifted.
 
-This kit solves that with two primitives:
+This kit fixes that with two primitives:
 
 | Without the kit | With the kit |
 |---|---|
-| AI gives generic startup advice | AI knows your company, your stage, your history |
+| AI gives generic startup advice | AI knows your stage, history, and constraints |
 | Every session starts from zero | Context accumulates across sessions |
-| Good ideas get lost | Decisions are logged with reasoning |
+| Good insight gets lost | Decisions are logged with reasoning |
 | You repeat the same analysis | Patterns and mistakes are captured |
 
-The skills are designed to work together. `/mentor` does the thinking. `/memory-update` makes sure that thinking persists.
+The compound loop works like this:
+
+```
+START SESSION
+  Claude loads MEMORY.md + relevant project files
+  Full context without re-explaining anything
+
+DURING SESSION: /mentor
+  Socratic mode by default — asks questions, reflects back
+  Advice mode when you ask: "give me your advice"
+  Research-grounded, challenges your assumptions
+  Weighted decision matrix if needed
+
+END SESSION: /memory-update
+  Logs decisions, what worked, what didn't
+  Writes Obsidian daily note (if configured)
+  Self-reflects so next session starts smarter
+```
 
 ---
 
-## What's in this repo
+## Install in 4 steps
 
-```
-founder-intelligence-kit/
-├── skills/
-│   ├── mentor/
-│   │   ├── SKILL.md        ← the mentor skill
-│   │   └── feedback.log    ← autoimprovement log (starts empty)
-│   └── memory-update/
-│       ├── SKILL.md        ← the memory-update skill
-│       └── feedback.log    ← autoimprovement log (starts empty)
-└── templates/
-    ├── MEMORY.md           ← starter memory index for your project
-    └── session-log.md      ← session log template
-```
+**Step 1. Install Claude Code** if you haven't: [claude.ai/code](https://claude.ai/code)
 
----
-
-## Quick install
-
-**1. Install Claude Code** if you haven't: [claude.ai/code](https://claude.ai/code)
-
-**2. Copy the skills into your user skills directory:**
+**Step 2. Copy the skills into your user skills directory:**
 
 ```bash
 # Mac / Linux
 cp -r skills/mentor ~/.claude/skills/
 cp -r skills/memory-update ~/.claude/skills/
 
-# Windows (PowerShell)
-Copy-Item -Recurse skills/mentor $env:USERPROFILE\.claude\skills\
-Copy-Item -Recurse skills/memory-update $env:USERPROFILE\.claude\skills\
+# Windows (PowerShell — run from this repo's folder)
+Copy-Item -Recurse skills\mentor $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse skills\memory-update $env:USERPROFILE\.claude\skills\
 ```
 
-**3. Set up the memory system** for each project you want to track:
+**Step 3. Set up the memory system** for each project you want to track:
 
 ```bash
-mkdir -p ~/.claude/projects/<your-project-name>/memory
-cp templates/MEMORY.md ~/.claude/projects/<your-project-name>/memory/
+# Replace <your-project> with a short name for your project
+mkdir ~/.claude/projects/<your-project>/memory
+cp templates/MEMORY.md ~/.claude/projects/<your-project>/memory/
 ```
 
-**4. (Optional) Configure Obsidian** — see [Obsidian integration](#obsidian-integration) below.
+**Step 4. Configure each skill.** Open the SKILL.md file for each skill and fill in the `## CONFIGURATION` block at the top:
 
-**5. Test the install** — open a Claude Code session and type `/mentor` or `/memory-update`.
+```
+MEMORY_PATH: ~/.claude/projects/<your-project>/memory/
+VAULT_PATH:  /path/to/your/obsidian/vault   # optional
+```
+
+Test it: open a Claude Code session and type `/mentor` or `/memory-update`.
+
+---
+
+## How /mentor works
+
+### Two modes
+
+**Socratic mode (default)** — activated by `/mentor` with no other instruction, or phrases like "help me think through", "I'm struggling with", "reflect on this with me".
+
+In Socratic mode, the mentor:
+- Reflects back what it hears before asking anything
+- Asks exactly one question per response
+- Works through six layers: clarification, assumptions, evidence, implications, self, integration
+- Never gives the answer — guides you to find it yourself
+- Offers a synthesis every 4-6 exchanges: "Here's what I'm hearing..."
+
+**Advice mode** — activated when you explicitly say: "give me your advice", "what would you do", "just tell me".
+
+In Advice mode, the mentor:
+- Runs a structured analysis (weighted decision matrix, negotiation prep, or strategic options)
+- Grounds every recommendation in peer-reviewed research with cited sources
+- Labels opinion vs evidence clearly: "My view is..." vs "The evidence suggests..."
+- Returns to Socratic mode after delivering its view
+
+You can switch between modes at any point in the conversation.
+
+### What the mentor draws from
+
+40+ years of experience, 6 continents. Academic grounding in Kahneman (cognitive bias), Voss (negotiation), Erin Meyer (cross-cultural), Wasserman (founder dilemmas), Taleb (uncertainty), and 10+ others. Case studies from Google X, Pixar, Toyota, Mercado Libre, Safaricom, and more. Cross-cultural intelligence from Japanese *nemawashi* to African *Ubuntu* to Nordic *lagom*.
+
+Full bibliography is in [skills/mentor/SKILL.md](skills/mentor/SKILL.md).
+
+---
+
+## How /memory-update works
+
+Run it at the end of any significant session. It takes 60-90 seconds and does 8 things:
+
+1. Locates your memory directory
+2. Reviews everything that happened in the session
+3. Extracts: tasks completed, decisions made, blockers, user feedback, next steps
+4. Writes a self-reflection (what slowed Claude down, what to do differently next time)
+5. Creates or updates the right memory files (session log, project status, feedback rules)
+6. Updates MEMORY.md index
+7. Appends to Obsidian vault log (if configured)
+8. Writes an Obsidian daily note (if configured)
+
+The self-reflection in step 4 is what makes this compound. Over time, Claude gets better at working with you specifically — not because it's smarter, but because it's tracked what works and what doesn't.
 
 ---
 
 ## The memory architecture
 
-The memory system is a folder of small Markdown files, indexed by a single `MEMORY.md` file. Claude loads the index every session and reads individual files only when relevant.
-
 ```
 ~/.claude/projects/<project>/memory/
-├── MEMORY.md                       ← index (always loaded, under 200 lines)
-├── user_profile.md                 ← who you are, your background, preferences
-├── feedback_communication_style.md ← how Claude should talk to you
-├── project_<name>_status.md        ← current state of a project
-├── session_2026-06-18.md           ← what happened in today's session
+├── MEMORY.md                       ← index (always loaded, max 200 lines)
+├── user_profile.md                 ← who you are, expertise, preferences
+├── feedback_communication.md       ← how Claude should work with you
+├── project_<name>_status.md        ← current state, goals, decisions
+├── session_2026-06-18.md           ← what happened today
 └── ...
 ```
 
 ### Four memory types
 
-| Type | What to store | When it helps |
+| File prefix | What to store | Why it helps |
 |---|---|---|
-| `user_*` | Your role, goals, expertise level, preferences | Claude adapts its depth and framing to you |
+| `user_*` | Your role, background, expertise level, preferences | Claude adapts depth and framing to you specifically |
 | `feedback_*` | Corrections, validated approaches, what NOT to do | You never have to repeat the same guidance twice |
-| `project_*` | Status, deadlines, decisions made, goals | Context loads instantly without re-explaining |
-| `session_*` | What happened, decisions, next steps, self-reflection | Each session builds on the last |
+| `project_*` | Status, deadlines, goals, key decisions | Context loads instantly without re-explaining |
+| `session_*` | What happened, what was decided, next steps | Each session builds on the last |
 
 ### Why this design
 
-**Token efficiency.** `MEMORY.md` is always in context but stays small (under 200 lines). Full memory files load only when relevant — so you pay for context proportional to what you actually need.
+**Token efficiency.** `MEMORY.md` stays under 200 lines and loads every session. Full files load only when relevant. You pay for context proportional to what you actually need.
 
-**Separation of concerns.** Each topic gets its own file. When a project changes, you update one file, not a monolith. When a preference changes, you update the feedback file, not hunt for it in a session log.
+**Point-in-time integrity.** When facts change, update the file — don't append. Session logs capture the timeline. Status files capture what's true right now.
 
-**Point-in-time integrity.** Memory files are snapshots. If a fact changes, update the file — don't append history. The session logs capture the timeline; the status files capture truth now.
-
-**Self-correcting.** The `/memory-update` skill includes a self-reflection phase where Claude logs what slowed it down and what it would do differently. Over time, this surfaces patterns: recurring mistakes, approaches that work, context that's always needed.
+**Self-correcting.** The session log includes a self-reflection: what slowed Claude down, what it would do differently. Over time, this surfaces patterns and recurring mistakes.
 
 ---
 
 ## Obsidian integration
 
-Both skills can write to an Obsidian vault. This is optional but powerful: your Obsidian vault becomes a searchable, linked knowledge base of every important decision and session.
+Both skills can write to an Obsidian vault. This is optional but creates a powerful second layer: a searchable, linked knowledge base of every decision and session, browsable outside of Claude.
 
-### What gets written where
+### What gets written
 
-| Content | Destination |
+| Content | Location in vault |
 |---|---|
-| Session summary | `08-daily/YYYY-MM-DD.md` (daily note) |
+| Running chronological log | `00-dashboard/log.md` (append-only) |
 | Significant decisions | `06-decisions/YYYY-MM-DD-slug.md` |
-| Running log | `00-dashboard/log.md` (append-only) |
+| Session summaries | `08-daily/YYYY-MM-DD.md` (daily note) |
 
 ### Setup
 
-**1.** Create the folder structure in your vault (or point to an existing one):
+Create these folders in your vault (or point to existing ones):
 
 ```
 your-vault/
 ├── 00-dashboard/
-│   └── log.md
-├── 06-decisions/
-└── 08-daily/
+│   └── log.md       ← running log, created automatically if it doesn't exist
+├── 06-decisions/    ← one file per significant decision
+└── 08-daily/        ← daily notes, one per day
 ```
 
-**2.** Open `skills/memory-update/SKILL.md` and set `YOUR_VAULT_PATH` to your vault's absolute path:
+Set `VAULT_PATH` in both skill SKILL.md files, and the rest is automatic.
 
-```yaml
-# Near the top of the skill file, under ## Configuration:
-VAULT_PATH: /Users/yourname/Documents/my-vault
-```
-
-**3.** From that point, every `/memory-update` call writes a daily note and appends to the vault log automatically.
-
-### How Obsidian and Claude memory work together
-
-The Claude memory system (`~/.claude/projects/`) and Obsidian serve different purposes:
+### Claude memory vs Obsidian
 
 | Claude memory (`~/.claude/`) | Obsidian vault |
 |---|---|
@@ -152,200 +197,73 @@ The Claude memory system (`~/.claude/projects/`) and Obsidian serve different pu
 | Loaded by Claude automatically | Browsed by you directly |
 | Structured for AI consumption | Structured for human review |
 | Project-scoped | Cross-project, searchable |
-| Ephemeral when outdated | Archival, never deleted |
+| Updated when it changes | Append-only archive |
 
-Think of Claude memory as the working memory (RAM) and Obsidian as the long-term record (disk). The `/memory-update` skill writes to both at the end of each session.
-
----
-
-## Using the skills together
-
-The compound loop works in three stages:
-
-```
-START SESSION
-  └── Claude loads MEMORY.md + relevant project files
-      └── Full context without re-explaining anything
-
-DURING SESSION: /mentor
-  └── Socratic inquiry → structured analysis → mentor's view
-  └── Research-grounded, challenges your assumptions
-  └── Weighted decision matrix if needed
-
-END SESSION: /memory-update
-  └── Logs decisions, what worked, what didn't
-  └── Writes Obsidian daily note (if configured)
-  └── Self-reflects so next session starts smarter
-```
-
-### Example: A co-founder conflict
-
-**Session 1:**
-- You describe the conflict to `/mentor`
-- Mentor runs Phase 1 (loads any context it has), asks Socratic questions, builds a negotiation prep matrix
-- You reach a decision on how to approach the conversation
-- `/memory-update` logs the decision, the reasoning, the alternatives rejected, and the emotional state you were in
-
-**Session 2 (one week later):**
-- Claude loads memory — it already knows the conflict history, your decision, and your BATNA
-- You type: "the conversation happened, here's what they said"
-- `/mentor` immediately builds on stored context instead of starting from scratch
-- It notices patterns: "In your session last week you flagged X as a risk. It happened. Here's what that tells us..."
-
-**Session 3:**
-- You're making a bigger strategic decision in a completely different area
-- `/mentor` cross-references the conflict resolution experience — "this is similar to how you handled the co-founder negotiation: you optimized for X over Y. Is that still your priority ordering?"
-
-This is the compounding effect. Without `/memory-update`, Session 2 and 3 start cold. With it, context accumulates.
-
----
-
-## Mentor skill
-
-### What it does
-
-A 9-phase structured mentoring framework that:
-- Loads your context first (memory + any company data you've configured)
-- Uses Socratic questioning before giving any advice
-- Grounds every recommendation in peer-reviewed research with cited sources
-- Builds weighted decision matrices for multi-option choices
-- Prepares full negotiation frameworks for deals and conflicts
-- Applies cross-cultural lens for international situations
-- Gives its own direct view — labeled as opinion, not fact
-
-### Trigger phrases
-
-```
-/mentor
-"advise me on..."
-"help me decide..."
-"negotiate this..."
-"strategic decision..."
-"think this through with me..."
-"weighted decision..."
-"decision matrix..."
-"business advice..."
-```
-
-### What it doesn't do
-
-- It does not validate your existing decision — it challenges it first
-- It does not give generic startup advice — it grounds everything in your specific context
-- It does not pretend certainty — all claims carry a confidence label
-- It does not say "great question" — it engages with the substance
-
-### Configuration
-
-At the top of `skills/mentor/SKILL.md`, set:
-
-```yaml
-MEMORY_PATH: ~/.claude/projects/<your-project>/memory/
-VAULT_PATH: /path/to/your/obsidian/vault    # optional
-COMPANY_DATA_PATH: /path/to/company/notes   # optional
-```
-
----
-
-## Memory update skill
-
-### What it does
-
-A 8-phase session sync that runs at the end of a conversation:
-1. Locates your memory system
-2. Reviews everything that happened in the session
-3. Extracts decisions, tasks, blockers, feedback, next steps
-4. Self-reflects (what slowed Claude down, what it would do differently)
-5. Writes or updates the relevant memory files
-6. Updates the MEMORY.md index
-7. Appends to Obsidian vault log (if configured)
-8. Writes an Obsidian daily note (if configured)
-9. Confirms to you what was saved
-
-### Trigger phrases
-
-```
-/memory-update
-"update memory"
-"save session"
-"end of session"
-"wrap up"
-"save progress"
-"memory update"
-```
-
-### Configuration
-
-At the top of `skills/memory-update/SKILL.md`, set:
-
-```yaml
-MEMORY_BASE_PATH: ~/.claude/projects/
-VAULT_PATH: /path/to/your/obsidian/vault    # optional — leave blank to skip Obsidian steps
-```
+Think of Claude memory as RAM and Obsidian as disk. `/memory-update` writes to both.
 
 ---
 
 ## Use cases
 
-### Fundraising decision
+### Fundraising
 
-You're deciding between two term sheets. Open `/mentor`:
-- It loads your budget constraints, cap table, and any past fundraising notes from memory
-- Asks Socratic questions to surface what you actually care about (control? money? network?)
-- Builds a weighted decision matrix with your criteria
-- Researches comparable pre-seed terms (citing sources)
-- Gives its direct view with reasoning
-- You run `/memory-update` → the decision is logged with rationale → next session starts with full deal history
+You're choosing between two term sheets. Run `/mentor`:
+- It loads your burn rate, cap table, and past fundraising notes from memory
+- Asks what you're actually optimizing for: control, capital, or network?
+- Surfaces the cognitive biases at play (anchoring on headline valuation?)
+- In advice mode: builds a weighted decision matrix with your criteria and comparable term data
+- Run `/memory-update` — the decision is logged with rationale so if the deal falls through you have the original reasoning
+
+### Co-founder conflict
+
+A conversation you've been avoiding:
+- `/mentor` runs the full negotiation prep: your BATNA, their BATNA, ZOPA, cultural context
+- Uses Voss's tactical empathy method to script your opening moves
+- Flags if you're deciding from fear vs. clarity
+- `/memory-update` captures the prep, the outcome, what you'd do differently
 
 ### Hiring your first employee
 
-You're choosing between a contract and a full-time hire for a key role:
-- `/mentor` loads your burn rate and stage from project memory
-- Applies Noam Wasserman's research on founder dilemmas (it cites the page)
-- Asks what outcome you're actually optimizing for — speed, quality, cost, or flexibility?
-- Flags the cognitive biases at play (you may be anchoring on salary cost, not total cost)
-- `/memory-update` captures the decision so if the hire doesn't work out, you have the original reasoning
-
-### Preparing for a difficult conversation
-
-A co-founder, investor, or client conversation you've been avoiding:
-- `/mentor` runs the full negotiation prep matrix (your BATNA, their BATNA, ZOPA, cultural context)
-- Uses Voss's tactical empathy method to script your opening moves
-- Flags if you're deciding from fear vs. clarity (emotional state check)
-- Gives you calibrated questions to ask in the room
-- `/memory-update` captures the prep, the conversation outcome, and what you'd do differently
+Contract vs. full-time for a key role:
+- `/mentor` loads your burn rate from memory
+- Applies Wasserman's research on founder dilemmas (cites the source)
+- Asks what you're optimizing for: speed, quality, cost, or flexibility?
+- Flags the hidden costs you haven't counted yet
 
 ### Weekly strategic review
 
-End of each week, run `/mentor` + `/memory-update` as a ritual:
-- Ask the mentor: "What am I not seeing this week?"
-- It reviews recent session logs and project memory
-- Identifies patterns: decisions you keep deferring, assumptions you keep making
-- `/memory-update` writes the weekly reflection to Obsidian
-- Over time, you build a searchable log of your strategic reasoning as a founder
+A 15-minute end-of-week ritual:
+- Ask `/mentor`: "What am I not seeing this week?"
+- It reviews recent session logs and project memory, identifies patterns
+- `/memory-update` writes the reflection to Obsidian
+- Over time you build a searchable log of your strategic reasoning
 
 ---
 
-## Compliance and best practices
+## Templates
 
-These skills are built to the [Anthropic skill design guidelines](https://docs.anthropic.com/en/docs/claude-code/tutorials--creating-a-claude-skill) and the Chainlink developer agent skill principles:
-
-- **Progressive disclosure:** The frontmatter description is kept under 1024 characters and loads every session. The full skill body loads only when triggered.
-- **Explicit triggers:** Both natural language and `/slash-command` triggers are specified.
-- **Autoimprovement:** Each skill includes a `feedback.log` that is read at session start and appended during the session.
-- **Guardrails:** Both skills have explicit guardrails for irreversible actions (writing to external systems, committing decisions).
-- **Source quality standards:** The mentor skill specifies Tier 1/2/3 source classifications and never cites unverified content.
-- **Anti-hallucination:** Both skills instruct Claude to flag when it cannot verify information rather than guessing.
+| Template | What it's for |
+|---|---|
+| [templates/MEMORY.md](templates/MEMORY.md) | Starter memory index — copy to your project's memory folder |
+| [templates/session-log.md](templates/session-log.md) | Session log structure — used automatically by /memory-update |
 
 ---
 
-## Contributing
+## Compliance with Anthropic skill design guidelines
 
-Issues and PRs welcome. If you've built on top of these skills or adapted them for a different use case, open a PR with your variation.
+Both skills are built to the [Anthropic skill design guidelines](https://docs.anthropic.com/en/docs/claude-code/tutorials--creating-a-claude-skill):
 
-This kit is maintained by [Stephany Biello](https://github.com/stephaniebiello) and the [Lyra AI](https://justlyra.com) team.
+- Frontmatter descriptions are under 1024 characters and loaded every session
+- Full skill body loads only when triggered (progressive disclosure)
+- Both natural language and `/slash-command` triggers are specified
+- Each skill includes a `feedback.log` for autoimprovement (read at session start, appended during sessions)
+- Explicit guardrails for irreversible actions
+- Anti-hallucination: both skills instruct Claude to flag unverifiable information
 
 ---
 
 ## License
 
 MIT. Use it, fork it, ship it.
+
+Maintained by [@stephaniebiello](https://github.com/stephaniebiello) and the [Lyra AI](https://justlyra.com) team.
