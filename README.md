@@ -214,7 +214,7 @@ You're choosing between two term sheets. Run `/mentor`:
 - In advice mode: builds a weighted decision matrix with your criteria and comparable term data
 - Run `/memory-update` — the decision is logged with rationale so if the deal falls through you have the original reasoning
 
-### Co-founder conflict
+### Conflict in the team
 
 A conversation you've been avoiding:
 - `/mentor` runs the full negotiation prep: your BATNA, their BATNA, ZOPA, cultural context
