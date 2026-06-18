@@ -1,0 +1,5 @@
+# Mentor Skill — Autoimprovement Log
+# Format: [YYYY-MM-DD] CORRECTION: <what was wrong and right approach>
+#         [YYYY-MM-DD] VALIDATED: <approach that worked well>
+# This file is read at session start and appended during sessions.
+# Only log preferences applicable to future sessions.

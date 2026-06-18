@@ -1,0 +1,13 @@
+# Local configuration overrides
+*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+
+# Any local memory files you add
+memory/
